@@ -1019,7 +1019,7 @@
   <footer class="footer">
    <div class="footer-content">
     <div class="footer-info">
-     <div class="footer-item"><span>��</span> <span id="footerPhone">9359-3126</span>
+     <div class="footer-item"><span>📞</span> <span id="footerPhone">9359-3126</span>
      </div>
      <div class="footer-item"><span>📧</span> <span id="footerEmail">correodelnegocio@correo.com</span>
      </div>
@@ -1213,59 +1213,69 @@
         }
 
         function applyPrintConfig() {
-            // Función auxiliar para aplicar clase print-hide
-            function togglePrintVisibility(elementId, shouldShow) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    if (shouldShow) {
-                        element.classList.remove('print-hide');
-                    } else {
-                        element.classList.add('print-hide');
-                    }
+            // Las configuraciones SOLO afectan el PDF, NO el sitio web
+            // Solo trabajamos con elementos que tienen clases específicas para impresión
+            
+            // Encabezado del negocio (solo en impresión)
+            const printHeaderSection = document.getElementById('printHeaderSection');
+            if (printHeaderSection) {
+                if (!printConfig.show_logo && !printConfig.show_business_name && 
+                    !printConfig.show_business_address && !printConfig.show_business_phone && !printConfig.show_business_email) {
+                    printHeaderSection.classList.add('print-hide');
+                } else {
+                    printHeaderSection.classList.remove('print-hide');
                 }
             }
 
-            // Encabezado del negocio
-            togglePrintVisibility('printHeaderSection', printConfig.show_logo || printConfig.show_business_name || 
-                printConfig.show_business_address || printConfig.show_business_phone || printConfig.show_business_email);
-            togglePrintVisibility('printLogo', printConfig.show_logo);
-            togglePrintVisibility('printBusinessName', printConfig.show_business_name);
-            togglePrintVisibility('printBusinessAddress', printConfig.show_business_address);
-            togglePrintVisibility('printBusinessContact', printConfig.show_business_phone || printConfig.show_business_email);
-
-            // Información del cliente
-            const clientInfoBox = document.querySelector('.info-section .info-box:first-child');
-            if (clientInfoBox) {
-                if (!printConfig.show_client_name && !printConfig.show_client_phone && !printConfig.show_client_address) {
-                    clientInfoBox.classList.add('print-hide');
+            const printLogo = document.getElementById('printLogo');
+            if (printLogo) {
+                if (!printConfig.show_logo) {
+                    printLogo.classList.add('print-hide');
                 } else {
-                    clientInfoBox.classList.remove('print-hide');
+                    printLogo.classList.remove('print-hide');
                 }
             }
 
-            // Información del gestor
-            const managerInfoBox = document.querySelector('.info-section .info-box:last-child');
-            if (managerInfoBox) {
-                if (!printConfig.show_manager_name && !printConfig.show_manager_phone) {
-                    managerInfoBox.classList.add('print-hide');
+            const printBusinessName = document.getElementById('printBusinessName');
+            if (printBusinessName) {
+                if (!printConfig.show_business_name) {
+                    printBusinessName.classList.add('print-hide');
                 } else {
-                    managerInfoBox.classList.remove('print-hide');
+                    printBusinessName.classList.remove('print-hide');
+                }
+            }
+
+            const printBusinessAddress = document.getElementById('printBusinessAddress');
+            if (printBusinessAddress) {
+                if (!printConfig.show_business_address) {
+                    printBusinessAddress.classList.add('print-hide');
+                } else {
+                    printBusinessAddress.classList.remove('print-hide');
+                }
+            }
+
+            const printBusinessContact = document.getElementById('printBusinessContact');
+            if (printBusinessContact) {
+                if (!printConfig.show_business_phone && !printConfig.show_business_email) {
+                    printBusinessContact.classList.add('print-hide');
+                } else {
+                    printBusinessContact.classList.remove('print-hide');
                 }
             }
 
             // Tabla de pagos
             const paymentScheduleSection = document.querySelector('.payment-schedule');
-            if (paymentScheduleSection && paymentScheduleSection.parentElement) {
+            if (paymentScheduleSection) {
                 const scheduleTitle = paymentScheduleSection.previousElementSibling;
-                if (printConfig.show_payment_schedule) {
-                    paymentScheduleSection.classList.remove('print-hide');
-                    if (scheduleTitle && scheduleTitle.tagName === 'H3') {
-                        scheduleTitle.classList.remove('print-hide');
-                    }
-                } else {
+                if (!printConfig.show_payment_schedule) {
                     paymentScheduleSection.classList.add('print-hide');
                     if (scheduleTitle && scheduleTitle.tagName === 'H3') {
                         scheduleTitle.classList.add('print-hide');
+                    }
+                } else {
+                    paymentScheduleSection.classList.remove('print-hide');
+                    if (scheduleTitle && scheduleTitle.tagName === 'H3') {
+                        scheduleTitle.classList.remove('print-hide');
                     }
                 }
             }
@@ -1273,27 +1283,15 @@
             // Sección de firma
             const signatureSection = document.querySelector('.signature-section');
             if (signatureSection) {
-                if (printConfig.show_signature) {
-                    signatureSection.classList.remove('print-hide');
-                } else {
+                if (!printConfig.show_signature) {
                     signatureSection.classList.add('print-hide');
+                } else {
+                    signatureSection.classList.remove('print-hide');
                 }
             }
 
-            // Datos individuales del préstamo (summary-grid)
-            togglePrintVisibility('summaryLoanType', printConfig.show_loan_type);
-            togglePrintVisibility('summaryLoanAmount', printConfig.show_loan_amount);
-            togglePrintVisibility('summaryDownPayment', printConfig.show_down_payment);
-            togglePrintVisibility('summaryFinancedAmount', printConfig.show_financed_amount);
-            togglePrintVisibility('summaryInterestRate', printConfig.show_interest_rate);
-            togglePrintVisibility('summaryTotalInterest', printConfig.show_total_interest);
-            togglePrintVisibility('summaryTotalAmount', printConfig.show_total_amount);
-            togglePrintVisibility('monthlyPaymentItem', printConfig.show_monthly_payment);
-
-            // Aplicar a las filas individuales de la info-table (para impresión)
+            // Aplicar configuración a las tablas de impresión
             applyInfoTableVisibility();
-
-            // Aplicar a las filas individuales de la summary-table (para impresión)
             applySummaryTableVisibility();
         }
 
@@ -1888,5 +1886,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dda1f543d31c5',t:'MTc2MzUzNTg1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dea3d609631c5',t:'MTc2MzUzNjUxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
