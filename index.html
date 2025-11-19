@@ -590,6 +590,43 @@
             display: none;
         }
 
+        .signature-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .signature-box {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-bottom: 2px solid #333;
+            margin-bottom: 0.5rem;
+            height: 60px;
+        }
+
+        .signature-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .signature-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media print {
+            .signature-section {
+                page-break-inside: avoid;
+                margin-top: 2rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -843,6 +880,15 @@
        <tbody id="paymentTableBody">
        </tbody>
       </table>
+     </div>
+     <div class="signature-section">
+      <div class="signature-box">
+       <div class="signature-line"></div>
+       <div class="signature-name" id="signatureName"></div>
+       <div class="signature-label">
+        Firma del Cliente
+       </div>
+      </div>
      </div>
      <div class="button-group"><button class="btn btn-secondary" onclick="resetCalculator()">Nuevo Cálculo</button> <button class="btn btn-primary" onclick="window.print()">Imprimir Reporte</button>
      </div>
@@ -1318,6 +1364,8 @@
             });
             document.getElementById('printDate').textContent = `Generado: ${printDate}`;
 
+            document.getElementById('signatureName').textContent = clientName;
+
             document.getElementById('printFloat').classList.add('active');
         }
 
@@ -1371,5 +1419,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0da3a8122531c5',t:'MTc2MzUzMzYyMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dabe212e331c5',t:'MTc2MzUzMzk1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
