@@ -384,6 +384,14 @@
             display: none;
         }
 
+        .client-info-table {
+            display: none;
+        }
+
+        .manager-info-table {
+            display: none;
+        }
+
         .print-hide {
             display: none !important;
         }
@@ -473,7 +481,6 @@
             .info-table {
                 display: table !important;
                 width: 100%;
-                margin-bottom: 1rem;
                 border-collapse: collapse;
             }
 
@@ -486,7 +493,15 @@
             .info-table .label-cell {
                 font-weight: 600;
                 background: #f5f5f5;
-                width: 25%;
+                width: 40%;
+            }
+
+            .client-info-table {
+                display: table !important;
+            }
+
+            .manager-info-table {
+                display: table !important;
             }
 
             .summary-grid {
@@ -886,26 +901,36 @@
        </div>
       </div>
      </div>
-     <table class="info-table">
-      <tbody>
-       <tr>
-        <td class="label-cell">Cliente</td>
-        <td id="resultClientNameTable"></td>
-        <td class="label-cell">Gestor</td>
-        <td id="resultManagerNameTable"></td>
-       </tr>
-       <tr>
-        <td class="label-cell">Teléfono Cliente</td>
-        <td id="resultClientPhoneTable"></td>
-        <td class="label-cell">Teléfono Gestor</td>
-        <td id="resultManagerPhoneTable"></td>
-       </tr>
-       <tr>
-        <td class="label-cell">Dirección</td>
-        <td colspan="3" id="resultClientAddressTable"></td>
-       </tr>
-      </tbody>
-     </table>
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <table class="info-table client-info-table" id="clientInfoTablePrint">
+       <tbody>
+        <tr id="clientNameRowTable">
+         <td class="label-cell">Cliente</td>
+         <td id="resultClientNameTable"></td>
+        </tr>
+        <tr id="clientPhoneRowTable">
+         <td class="label-cell">Teléfono</td>
+         <td id="resultClientPhoneTable"></td>
+        </tr>
+        <tr id="clientAddressRowTable">
+         <td class="label-cell">Dirección</td>
+         <td id="resultClientAddressTable"></td>
+        </tr>
+       </tbody>
+      </table>
+      <table class="info-table manager-info-table" id="managerInfoTablePrint">
+       <tbody>
+        <tr id="managerNameRowTable">
+         <td class="label-cell">Gestor</td>
+         <td id="resultManagerNameTable"></td>
+        </tr>
+        <tr id="managerPhoneRowTable">
+         <td class="label-cell">Teléfono</td>
+         <td id="resultManagerPhoneTable"></td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
      <div class="summary-grid">
       <div class="summary-item" id="summaryLoanType">
        <div class="summary-label">
@@ -1296,48 +1321,70 @@
         }
 
         function applyInfoTableVisibility() {
-            const infoTable = document.querySelector('.info-table');
-            if (!infoTable) return;
-
-            const rows = infoTable.querySelectorAll('tr');
-            if (rows.length >= 3) {
-                // Primera fila: Cliente y Gestor
-                const firstRow = rows[0];
-                const clientNameCell = firstRow.cells[0];
-                const clientNameValueCell = firstRow.cells[1];
-                const managerNameCell = firstRow.cells[2];
-                const managerNameValueCell = firstRow.cells[3];
-
-                if (!printConfig.show_client_name) {
-                    clientNameCell.classList.add('print-hide');
-                    clientNameValueCell.classList.add('print-hide');
-                } else {
-                    clientNameCell.classList.remove('print-hide');
-                    clientNameValueCell.classList.remove('print-hide');
+            const clientInfoTablePrint = document.getElementById('clientInfoTablePrint');
+            const managerInfoTablePrint = document.getElementById('managerInfoTablePrint');
+            
+            // Tabla de información del cliente
+            if (clientInfoTablePrint) {
+                const clientNameRow = document.getElementById('clientNameRowTable');
+                const clientPhoneRow = document.getElementById('clientPhoneRowTable');
+                const clientAddressRow = document.getElementById('clientAddressRowTable');
+                
+                // Aplicar configuración de visibilidad
+                if (!printConfig.show_client_name && clientNameRow) {
+                    clientNameRow.classList.add('print-hide');
+                } else if (clientNameRow) {
+                    clientNameRow.classList.remove('print-hide');
                 }
-
-                if (!printConfig.show_manager_name) {
-                    managerNameCell.classList.add('print-hide');
-                    managerNameValueCell.classList.add('print-hide');
-                } else {
-                    managerNameCell.classList.remove('print-hide');
-                    managerNameValueCell.classList.remove('print-hide');
+                
+                if (!printConfig.show_client_phone && clientPhoneRow) {
+                    clientPhoneRow.classList.add('print-hide');
+                } else if (clientPhoneRow) {
+                    clientPhoneRow.classList.remove('print-hide');
                 }
-
-                // Segunda fila: Teléfonos
-                const secondRow = rows[1];
-                if (!printConfig.show_client_phone && !printConfig.show_manager_phone) {
-                    secondRow.classList.add('print-hide');
-                } else {
-                    secondRow.classList.remove('print-hide');
+                
+                if (!printConfig.show_client_address && clientAddressRow) {
+                    clientAddressRow.classList.add('print-hide');
+                } else if (clientAddressRow) {
+                    clientAddressRow.classList.remove('print-hide');
                 }
-
-                // Tercera fila: Dirección
-                const thirdRow = rows[2];
-                if (!printConfig.show_client_address) {
-                    thirdRow.classList.add('print-hide');
+                
+                // Ocultar toda la tabla si todos los campos están ocultos
+                const allClientHidden = !printConfig.show_client_name && 
+                                       !printConfig.show_client_phone && 
+                                       !printConfig.show_client_address;
+                if (allClientHidden) {
+                    clientInfoTablePrint.classList.add('print-hide');
                 } else {
-                    thirdRow.classList.remove('print-hide');
+                    clientInfoTablePrint.classList.remove('print-hide');
+                }
+            }
+            
+            // Tabla de información del gestor
+            if (managerInfoTablePrint) {
+                const managerNameRow = document.getElementById('managerNameRowTable');
+                const managerPhoneRow = document.getElementById('managerPhoneRowTable');
+                
+                // Aplicar configuración de visibilidad
+                if (!printConfig.show_manager_name && managerNameRow) {
+                    managerNameRow.classList.add('print-hide');
+                } else if (managerNameRow) {
+                    managerNameRow.classList.remove('print-hide');
+                }
+                
+                if (!printConfig.show_manager_phone && managerPhoneRow) {
+                    managerPhoneRow.classList.add('print-hide');
+                } else if (managerPhoneRow) {
+                    managerPhoneRow.classList.remove('print-hide');
+                }
+                
+                // Ocultar toda la tabla si todos los campos están ocultos
+                const allManagerHidden = !printConfig.show_manager_name && 
+                                        !printConfig.show_manager_phone;
+                if (allManagerHidden) {
+                    managerInfoTablePrint.classList.add('print-hide');
+                } else {
+                    managerInfoTablePrint.classList.remove('print-hide');
                 }
             }
         }
@@ -1884,17 +1931,43 @@
 
             // Ocultar toda la sección info-section si no hay datos de cliente ni gestor
             const infoSection = document.getElementById('infoSection');
-            const infoTable = document.querySelector('.info-table');
+            const clientInfoTablePrint = document.getElementById('clientInfoTablePrint');
+            const managerInfoTablePrint = document.getElementById('managerInfoTablePrint');
             
             if (!hasClientInfo && !hasManagerInfo) {
                 infoSection.style.display = 'none';
-                if (infoTable) {
-                    infoTable.style.display = 'none';
+                if (clientInfoTablePrint) {
+                    clientInfoTablePrint.classList.add('print-hide');
+                }
+                if (managerInfoTablePrint) {
+                    managerInfoTablePrint.classList.add('print-hide');
                 }
             } else {
                 infoSection.style.display = 'grid';
-                if (infoTable) {
-                    infoTable.style.display = 'table';
+                
+                // Mostrar u ocultar tabla de cliente según tenga datos
+                if (clientInfoTablePrint) {
+                    if (hasClientInfo) {
+                        clientInfoTablePrint.classList.remove('print-hide');
+                        // Ocultar filas individuales según datos
+                        document.getElementById('clientNameRowTable').style.display = clientName ? 'table-row' : 'none';
+                        document.getElementById('clientPhoneRowTable').style.display = clientPhone ? 'table-row' : 'none';
+                        document.getElementById('clientAddressRowTable').style.display = clientAddress ? 'table-row' : 'none';
+                    } else {
+                        clientInfoTablePrint.classList.add('print-hide');
+                    }
+                }
+                
+                // Mostrar u ocultar tabla de gestor según tenga datos
+                if (managerInfoTablePrint) {
+                    if (hasManagerInfo) {
+                        managerInfoTablePrint.classList.remove('print-hide');
+                        // Ocultar filas individuales según datos
+                        document.getElementById('managerNameRowTable').style.display = managerName ? 'table-row' : 'none';
+                        document.getElementById('managerPhoneRowTable').style.display = managerPhone ? 'table-row' : 'none';
+                    } else {
+                        managerInfoTablePrint.classList.add('print-hide');
+                    }
                 }
             }
             
@@ -2032,5 +2105,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e17f1e10531c5',t:'MTc2MzUzODM4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e23a7c72b31c5',t:'MTc2MzUzODg2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
